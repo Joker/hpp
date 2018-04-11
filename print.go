@@ -124,8 +124,9 @@ Loop:
 	return bytes.TrimLeft(b.Bytes(), "\n\r\t ")
 }
 
-func txtFmt(txt []byte, depth int) []byte {
+func txtFmt(t []byte, depth int) []byte {
 	var (
+		txt = bytes.Replace(t, []byte{'\t'}, TabStr, -1)
 		min = 1000
 		ln  = 0
 		f   = func(c rune) bool { return '\n' != c && ' ' != c }
