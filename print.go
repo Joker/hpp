@@ -43,8 +43,8 @@ func Print(r io.Reader) []byte {
 		prevType html.TokenType
 		tagName  []byte
 		prvName  []byte
-		rb       = regexp.MustCompile(`^\s*?[[:blank:]]+\S`)
-		re       = regexp.MustCompile(`\S[[:blank:]]+\s*?$`)
+		rb       = regexp.MustCompile(`^\s+\S`)
+		re       = regexp.MustCompile(`\S\s+$`)
 	)
 Loop:
 	for {
@@ -89,19 +89,19 @@ Loop:
 		case html.TextToken:
 			t := bytes.Replace(tokenize.Raw(), []byte{'\t'}, TabStr, -1)
 			text := bytes.Trim(t, "\n\r ")
-			if rb.Match(t) {
-				text = append([]byte{' '}, text...)
-			}
 			if re.Match(t) {
 				text = append(text, ' ')
 			}
-
 			LongText = false
 			if len(text) > 0 {
 				if bytes.Contains(text, []byte{'\n'}) {
 					if !(prevType == html.EndTagToken && isInline(tagName)) {
 						b.WriteByte('\n')
 						b.Write(bytes.Repeat(TabStr, depth))
+					} else {
+						if rb.Match(t) {
+							text = append([]byte{' '}, text...)
+						}
 					}
 					b.Write(txtFmt(text, depth))
 					LongText = true
@@ -113,6 +113,10 @@ Loop:
 							b.WriteByte('\n')
 							b.Write(bytes.Repeat(TabStr, depth))
 							LongText = true
+						} else {
+							if rb.Match(t) {
+								text = append([]byte{' '}, text...)
+							}
 						}
 					}
 					b.Write(text)

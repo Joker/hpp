@@ -23,7 +23,7 @@ func TestPrint(t *testing.T) {
         <script type="text/javascript">
             if (foo) {
                 bar(1 + 5)
-            }
+            } 
         </script>
     </head>
     <body>
@@ -33,7 +33,7 @@ func TestPrint(t *testing.T) {
             <form>
                 <br>First name:
                 <input type="text" name="firstname">
-                <br>Last name:
+                <br>Last name: 
                 <input type="text" name="lastname">
             </form>
             <p>
