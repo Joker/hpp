@@ -44,3 +44,10 @@ becomes
     </body>
 </html>
 ```
+
+
+### Installation
+
+```sh
+$ go get github.com/Joker/hpp
+```

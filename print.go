@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"regexp"
+	"strings"
 	"unicode/utf8"
 
 	"golang.org/x/net/html"
@@ -152,4 +153,8 @@ func txtFmt(txt []byte, depth int) []byte {
 	}
 	var re = regexp.MustCompile(fmt.Sprintf(`\n\s{%d}`, min-1))
 	return re.ReplaceAllLiteral(txt, append([]byte{'\n'}, bytes.Repeat(TabStr, depth)...))
+}
+
+func PrPrint(in string) string {
+	return string(Print(strings.NewReader(in)))
 }
