@@ -56,8 +56,15 @@ func TestFormat(t *testing.T) {
 }
 
 func TestPrint(t *testing.T) {
-	output := string(Print(strings.NewReader(input)))
-	if expect != output {
+	output := Print(strings.NewReader(input))
+	if expect != string(output) {
+		t.Errorf("\n------ expect:\n%s\n------ output:\n%s", expect, output)
+	}
+}
+
+func TestByPrint(t *testing.T) {
+	output := ByPrint([]byte(input))
+	if expect != string(output) {
 		t.Errorf("\n------ expect:\n%s\n------ output:\n%s", expect, output)
 	}
 }
@@ -66,7 +73,7 @@ func TestPrPrint(t *testing.T) {
 	output := PrPrint(input)
 	if expect != output {
 		t.Errorf("\n------ expect:\n%s\n------ output:\n%s", expect, output)
+	} else {
+		fmt.Print(output)
 	}
-
-	fmt.Print(output)
 }

@@ -40,15 +40,21 @@ func isVoid(tag []byte) bool {
 }
 
 func PrPrint(in string) string {
-	b := new(bytes.Buffer)
-	Format(strings.NewReader(in), b)
-	return strings.TrimLeft(b.String(), "\n\r\t ")
+	out := new(bytes.Buffer)
+	Format(strings.NewReader(in), out)
+	return strings.TrimLeft(out.String(), "\n\r\t ")
+}
+
+func ByPrint(in []byte) []byte {
+	out := new(bytes.Buffer)
+	Format(bytes.NewReader(in), out)
+	return bytes.TrimLeft(out.Bytes(), "\n\r\t ")
 }
 
 func Print(r io.Reader) []byte {
-	b := new(bytes.Buffer)
-	Format(r, b)
-	return bytes.TrimLeft(b.Bytes(), "\n\r\t ")
+	out := new(bytes.Buffer)
+	Format(r, out)
+	return bytes.TrimLeft(out.Bytes(), "\n\r\t ")
 }
 
 func Format(r io.Reader, w io.Writer) {
@@ -88,7 +94,9 @@ Loop:
 			w.Write(tokenize.Raw())
 
 		case html.EndTagToken:
-			depth -= 1
+			if depth > 0 {
+				depth -= 1
+			}
 			switch {
 			case !bytes.Equal(prvName, tagName),
 				prevType == html.SelfClosingTagToken,
@@ -150,6 +158,18 @@ Loop:
 		prevType = nowType
 	}
 	w.Write(NewStr)
+}
+
+func PHPformat(in []byte) []byte {
+	in = bytes.Replace(in, []byte("<?"), []byte("{{{"), -1)
+	in = bytes.Replace(in, []byte("?>"), []byte("}}}"), -1)
+
+	wr := new(bytes.Buffer)
+	Format(bytes.NewReader(in), wr)
+
+	out := bytes.Replace(wr.Bytes(), []byte("{{{"), []byte("<?"), -1)
+	out = bytes.Replace(out, []byte("}}}"), []byte("?>"), -1)
+	return bytes.TrimLeft(out, "\n\r\t ")
 }
 
 func txtFmt(txt []byte, depth int) []byte {
